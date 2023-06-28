@@ -72,11 +72,7 @@ def plantuml(key, value, format, meta):
             title, typef, keyvals = get_title(keyvals)
 
             filename = "plantuml-" + get_md5(code)
-
-            if 'umlformat' in meta:
-                filetype = meta['umlformat']['c']
-            else:
-                filetype = 'svg'
+            filetype = meta['umlformat']['c'] if 'umlformat' in meta else 'svg'
 
             #if filetype != "eps" and filetype != "svg":
             #    sys.stderr.write("Unsupported plantuml format: " + filetype + ". Defaulting to svg.")
@@ -96,10 +92,8 @@ def plantuml(key, value, format, meta):
 
             p = Popen(["plantuml", "-t" + filetype, src], stderr=PIPE, stdout=PIPE)
             (stdout, stderr) = p.communicate()
-            if stderr.decode() != "":
-                sys.stderr.write("WARNING: failed to run plantuml: " + stderr.decode() + "\n")
-            else:
-                sys.stderr.write("Created image %s\n" % dest)
+            writeContent = "WARNING: failed to run plantuml: " + stderr.decode() + "\n" if stderr.decode() != "" else "Created image %s\n" % dest
+            sys.stderr.write(writeContent)
 
             #call(["plantuml", "-t"+filetype, src])
             #sys.stderr.write('Created image ' + dest + '\n')
